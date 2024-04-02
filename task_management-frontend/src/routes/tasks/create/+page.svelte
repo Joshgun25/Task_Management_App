@@ -18,7 +18,7 @@
         const isoDeadline = new Date(deadline).toISOString();
         console.log(deadline)
         console.log(isoDeadline)
-        const endpoint = 'http://localhost:8000/api/tasks/create/'
+        const endpoint = 'https://taskbackend-8290864ed371.herokuapp.com/api/tasks/create/'
         let data = new FormData()
         data.append('author', userId)
         data.append('title', title)

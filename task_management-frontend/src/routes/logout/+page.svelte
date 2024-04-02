@@ -12,7 +12,7 @@
 
     let handleLogout = async () => {
 
-        const endpoint = 'http://localhost:8000/authentication/logout/';
+        const endpoint = 'https://taskbackend-8290864ed371.herokuapp.com/authentication/logout/';
         const requestOptions = {
             method: 'POST',
             headers: {'Content-Type': 'application/json'}

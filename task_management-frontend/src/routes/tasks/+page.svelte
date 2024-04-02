@@ -12,7 +12,7 @@
 
     onMount(async function () {
         if (!$TasksStore.length) {
-            const endpoint = 'http://127.0.0.1:8000/api/tasks'
+            const endpoint = 'https://taskbackend-8290864ed371.herokuapp.com/api/tasks'
             const response = await fetch(endpoint)
             const data = await response.json() 
             TasksStore.set(data)
@@ -20,7 +20,7 @@
     })  
 
     let handleDelete = (id) => {
-        const endpoint = `http://localhost:8000/api/tasks/${id}`
+        const endpoint = `https://taskbackend-8290864ed371.herokuapp.com/api/tasks/${id}`
         fetch(endpoint, {method: 'DELETE'}).then(response => {
             if (response.status == 204) {
                 TasksStore.update(prev => prev.filter(task => task.id != id))

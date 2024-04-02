@@ -16,7 +16,7 @@ import {authenticatedUser} from '../../data-store'
     let errors = {}
 
     let handleRegister = () => {
-        const endpoint = 'http://localhost:8000/authentication/register/'
+        const endpoint = 'https://taskbackend-8290864ed371.herokuapp.com/authentication/register/'
         const requestOptions = {
             method: "POST",
             headers: {'Content-Type': 'application/json'},

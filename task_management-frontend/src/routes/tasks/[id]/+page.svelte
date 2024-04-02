@@ -17,7 +17,7 @@
         if ($TasksStore.length) {
             task = $TasksStore.find(task => task.id == data.id)
         } else {
-            const endpoint = `http://localhost:8000/api/tasks/${data.id}/`
+            const endpoint = `https://taskbackend-8290864ed371.herokuapp.com/api/tasks/${data.id}/`
             let response = await fetch(endpoint)
             if (response.status == 200) {
                 task = await response.json()

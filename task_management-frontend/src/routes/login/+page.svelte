@@ -14,7 +14,7 @@
 
     let handleLogin = () => {
 
-        const endpoint = 'http://localhost:8000/authentication/login/'
+        const endpoint = 'https://taskbackend-8290864ed371.herokuapp.com/authentication/login/'
         const requestOptions = {
             method: "POST",
             headers: {'Content-Type': 'application/json'},
@@ -32,6 +32,7 @@
                 }
                 else{
                     errors = data.body
+                    console.log(errors)
                 }
             })
     }

@@ -16,7 +16,7 @@
     let id;
     
     let handleSubmit = () => {
-        const endpoint = `http://localhost:8000/api/tasks/${id}/`
+        const endpoint = `https://taskbackend-8290864ed371.herokuapp.com/api/tasks/${id}/`
         let data = new FormData()
         data.append('author', 1)
         data.append('title', title)
@@ -40,7 +40,7 @@
         if ($TasksStore.length) {
             task = $TasksStore.find(task => task.id == id)
         } else {
-            const endpoint = `http://localhost:8000/api/tasks/${data.id}/`
+            const endpoint = `https://taskbackend-8290864ed371.herokuapp.com/api/tasks/${data.id}/`
             let response = await fetch(endpoint)
             if (response.status == 200) {
                 task = await response.json()
