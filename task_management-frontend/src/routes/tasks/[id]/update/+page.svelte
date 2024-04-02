@@ -1,7 +1,13 @@
 <script>
-    import {TasksStore} from '../../../../tasks-store'
+    import {TasksStore, authenticatedUser} from '../../../../data-store'
     import {goto} from '$app/navigation'
     import {onMount} from 'svelte'
+
+    let authenticated = false;
+
+    authenticatedUser.subscribe(value => {
+        authenticated = value !== null
+    });
     
     let title = '';
     let description = '';
@@ -9,7 +15,6 @@
     export let data;
     let id;
     
-
     let handleSubmit = () => {
         const endpoint = `http://localhost:8000/api/tasks/${id}/`
         let data = new FormData()
@@ -18,7 +23,6 @@
         data.append('deadline', deadline)
         data.append('description', description)
 
-        
         fetch(endpoint, {method: 'PUT', body: data}).then(response => response.json()).then(data => {
             TasksStore.update(prev => {
                 let updatedTasks = $TasksStore.slice()
@@ -27,8 +31,6 @@
                 return updatedTasks
             })
         })
-            
-
         goto('/tasks/')
     }
 
@@ -36,7 +38,7 @@
         id = data.id
         let task = {}
         if ($TasksStore.length) {
-            film = $TasksStore.find(task => task.id == id)
+            task = $TasksStore.find(task => task.id == id)
         } else {
             const endpoint = `http://localhost:8000/api/tasks/${data.id}/`
             let response = await fetch(endpoint)
@@ -49,26 +51,38 @@
         ({title, description, deadline} = task)
     })
 
+    const handleLogin = () => {
+        goto('/login');
+    }
+
 </script>
 
-
+{#if authenticated}
 <div>
-
     <h2 class="my-4">Update a Task</h2>
     <div class="col-12 col-md-6">
         <form on:submit|preventDefault={handleSubmit}>
             <div class="mb-3">
+                <label for="title">Title:</label>
                 <input class="form-control" type="text" placeholder="title" bind:value={title}/>
             </div>
+            <br>
             <div class="mb-3">
+                <label for="deadline">Deadline:</label>
                 <input class="form-control" type="datetime-local" placeholder="deadline" bind:value={deadline}/>
             </div>
+            <br>
             <div class="mb-3">
-                <input class="form-control" type="text" placeholder="description" bind:value={description}/>
+                <label for="description">Description:</label>
+                <textarea bind:value={description}></textarea>
             </div>
-        
+            <br>
             <button class="btn btn-primary" type="submit">Submit</button>
+            <button class="btn btn-secondary" on:click={() => goto('/tasks/')}>Back to Task List</button>
         </form>
     </div>
-
 </div>
+{:else}
+    <p>You need to login to access this page</p>
+    <button on:click={handleLogin}>Login</button>
+{/if}

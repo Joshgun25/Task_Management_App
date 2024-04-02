@@ -1,8 +1,15 @@
 <script>
-    import { onMount } from 'svelte';
-    import {TasksStore} from '../../tasks-store'
+    import { onMount } from 'svelte'
+    import {TasksStore, authenticatedUser} from '../../data-store'
+    import { formatDatetime } from '../../datetime-converter'
+    import { goto } from '$app/navigation';
 
-    
+    let authenticated = false;
+
+    authenticatedUser.subscribe(value => {
+        authenticated = value !== null
+    });
+
     onMount(async function () {
         if (!$TasksStore.length) {
             const endpoint = 'http://127.0.0.1:8000/api/tasks'
@@ -21,7 +28,10 @@
         })
     }
 
-    // Sorting and filtering logic
+    const handleLogin = () => {
+        goto('/login');
+    }
+
 </script>
 
 <head>
@@ -44,31 +54,36 @@
     </style>
 </head>
 <body>
-    <h1>Tasks List</h1>
-    <a href="/tasks/create" class="btn btn-primary mt-2">Create New</a>
-
-    <table>
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Deadline</th>
-                <th>Author</th>
-                <th>Created At</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            {#each $TasksStore as task}
+    {#if authenticated}
+        <h1>Tasks List</h1>
+        <button class="btn btn-primary mt-2" on:click={() => goto('/tasks/create')}>Create New</button>
+        <button class="btn btn-primary mt-2" on:click={() => goto('/')}>Home Page</button>
+        <table>
+            <thead>
                 <tr>
-                    <td><a href="/tasks/{task.id}">{ task.title }</a></td>
-                    <td>{ task.deadline }</td>
-                    <td>{ task.author }</td>
-                    <td>{ task.created_at }</td>
-                    <td><button on:click={() => handleDelete(task.id)} class="btn btn-danger ml-2">
-                        Delete 
-                    </button></td>
+                    <th>Title</th>
+                    <th>Deadline</th>
+                    <th>Author</th>
+                    <th>Created At</th>
+                    <th></th>
                 </tr>
-                {/each}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {#each $TasksStore as task}
+                    <tr>
+                        <td><a href="/tasks/{task.id}">{ task.title }</a></td>
+                        <td>{ formatDatetime(task.deadline) }</td>
+                        <td>{ task.author_username }</td>
+                        <td>{ formatDatetime(task.created_at) }</td>
+                        <td><button on:click={() => handleDelete(task.id)} class="btn btn-danger ml-2">
+                            Delete 
+                        </button></td>
+                    </tr>
+                    {/each}
+            </tbody>
+        </table>
+    {:else}
+        <p>You need to login to access this page</p>
+        <button on:click={handleLogin}>Login</button>
+    {/if}
 </body>

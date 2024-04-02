@@ -1,6 +1,14 @@
 <script>
-    import {TasksStore} from '../../../tasks-store'
+    import {TasksStore, authenticatedUser} from '../../../data-store'
     import { onMount } from "svelte";
+    import { formatDatetime } from '../../../datetime-converter'
+    import { goto } from '$app/navigation';
+
+    let authenticated = false;
+
+    authenticatedUser.subscribe(value => {
+        authenticated = value !== null
+    });
 
     export let data;
     let task;
@@ -19,6 +27,10 @@
         }
     })
 
+    const handleLogin = () => {
+        goto('/login');
+    }
+
 </script>
 
 <head>
@@ -27,16 +39,21 @@
     <title>Task Detail</title>
 </head>
 <body>
-    {#if task }
-        <h1>Task Detail</h1>
-        <p><strong>Title:</strong> { task.title }</p>
-        <p><strong>Description:</strong> { task.description }</p>
-        <p><strong>Creator:</strong> { task.author }</p>
-        <p><strong>Created At:</strong> { task.created_at }</p>
-        <p><strong>Deadline:</strong> { task.deadline }</p>
-        <a href="/tasks/{task.id}/update" class="btn btn-primary mt-2">Update</a>
-    {:else }
-        <p>No task was found with ID {data.id}</p>
-    {/if }
-    <a href="/tasks/">Back to Product List</a>
+    {#if authenticated}
+        {#if task }
+            <h1>Task Detail</h1>
+            <p><strong>Title:</strong> { task.title }</p>
+            <p><strong>Description:</strong> { task.description }</p>
+            <p><strong>Creator:</strong> { task.author_username }</p>
+            <p><strong>Created At:</strong> { formatDatetime(task.created_at) }</p>
+            <p><strong>Deadline:</strong> { formatDatetime(task.deadline) }</p>
+            <button class="btn btn-primary mt-2" on:click={() => goto(`/tasks/${task.id}/update`)}>Update</button>
+        {:else }
+            <p>No task was found with ID {data.id}</p>
+        {/if }
+        <button class="btn btn-primary mt-2" on:click={() => goto('/tasks/')}>Back to Tasks List</button>
+    {:else}
+        <p>You need to login to access this page</p>
+        <button on:click={handleLogin}>Login</button>
+    {/if}
 </body>
