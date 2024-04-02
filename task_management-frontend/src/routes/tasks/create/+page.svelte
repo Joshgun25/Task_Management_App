@@ -45,10 +45,12 @@
                     <label for="title">Title:</label>
                     <input class="form-control" type="text" placeholder="title" bind:value={title}/>
                 </div>
+                <br>
                 <div class="mb-3">
                     <label for="deadline">Deadline:</label>
                     <input class="form-control" type="datetime-local" placeholder="deadline" bind:value={deadline}/>
                 </div>
+                <br>
                 <div class="mb-3">
                     <label for="description">Description:</label>
                     <textarea bind:value={description}></textarea>

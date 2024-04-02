@@ -58,6 +58,7 @@
         <h1>Tasks List</h1>
         <button class="btn btn-primary mt-2" on:click={() => goto('/tasks/create')}>Create New</button>
         <button class="btn btn-primary mt-2" on:click={() => goto('/')}>Home Page</button>
+        <br><br>
         <table>
             <thead>
                 <tr>

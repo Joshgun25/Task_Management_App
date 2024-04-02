@@ -68,6 +68,9 @@
             {/if}<br>
         </div>
         <br>
+        {#if errors.detail}
+            <p classs="text-danger">{ errors.detail }</p>
+        {/if}
         <button type="submit">Login</button>
         <button on:click={redirectToRegister}>Register</button>
     </form>
