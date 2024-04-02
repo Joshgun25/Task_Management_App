@@ -34,7 +34,6 @@ class LoginView(APIView):
         else:
             return Response({'detail': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
     
-
 class CustomLogout(APIView):
     def post(self, request):
         logout(request)
