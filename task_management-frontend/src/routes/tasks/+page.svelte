@@ -5,6 +5,7 @@
     import { goto } from '$app/navigation';
 
     let authenticated = false;
+    let filteredTasks = [];
 
     authenticatedUser.subscribe(value => {
         authenticated = value !== null
@@ -31,6 +32,16 @@
     const handleLogin = () => {
         goto('/login');
     }
+
+    let searchTerm = "";
+
+    const searchTasks = () => {	
+		return filteredTasks = $TasksStore.filter(task => {
+			let taskTitle = task.title.toLowerCase();
+            let taskAuthor = task.author_username.toLowerCase();
+			return (taskTitle.includes(searchTerm.toLowerCase()) || taskAuthor.includes(searchTerm.toLocaleLowerCase()))
+		});
+	}
 
 </script>
 
@@ -59,6 +70,15 @@
         <button class="btn btn-primary mt-2" on:click={() => goto('/tasks/create')}>Create New</button>
         <button class="btn btn-primary mt-2" on:click={() => goto('/')}>Home Page</button>
         <br><br>
+        <div id="search-input-cont">
+            <input type="text" 
+                         id="search-field" 
+                         placeholder="Enter Search Term" 
+                         autocomplete="off"
+                         bind:value={searchTerm}
+                         on:input={searchTasks}/>
+        </div> 
+        <br>
         <table>
             <thead>
                 <tr>
@@ -70,7 +90,22 @@
                 </tr>
             </thead>
             <tbody>
-                {#each $TasksStore as task}
+                {#if searchTerm && filteredTasks.length === 0}
+                    <p>No Result</p>
+                {:else if filteredTasks.length > 0}
+                    {#each filteredTasks as task}
+                        <tr>
+                            <td><a href="/tasks/{task.id}">{ task.title }</a></td>
+                            <td>{ formatDatetime(task.deadline) }</td>
+                            <td>{ task.author_username }</td>
+                            <td>{ formatDatetime(task.created_at) }</td>
+                            <td><button on:click={() => handleDelete(task.id)} class="btn btn-danger ml-2">
+                                Delete 
+                            </button></td>
+                        </tr>
+                    {/each}
+                {:else}
+                    {#each $TasksStore as task}
                     <tr>
                         <td><a href="/tasks/{task.id}">{ task.title }</a></td>
                         <td>{ formatDatetime(task.deadline) }</td>
@@ -81,6 +116,7 @@
                         </button></td>
                     </tr>
                     {/each}
+                {/if}
             </tbody>
         </table>
     {:else}
