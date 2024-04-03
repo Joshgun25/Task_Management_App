@@ -6,6 +6,8 @@
 
     let authenticated = false;
     let filteredTasks = [];
+    let showActiveTasks = false;
+    let showExpiredTasks = false;
 
     authenticatedUser.subscribe(value => {
         authenticated = value !== null
@@ -35,7 +37,9 @@
 
     let searchTerm = "";
 
-    const searchTasks = () => {	
+    const searchTasks = () => {
+        showActiveTasks = false
+        showExpiredTasks = false
 		return filteredTasks = $TasksStore.filter(task => {
 			let taskTitle = task.title.toLowerCase();
             let taskAuthor = task.author_username.toLowerCase();
@@ -43,6 +47,9 @@
 		});
 	}
 
+    $: filteredTasks = (showActiveTasks ? $TasksStore.filter(task => new Date(task.deadline) > new Date()) : []).concat(
+        showExpiredTasks ? $TasksStore.filter(task => new Date(task.deadline) < new Date()) : []
+    );
 </script>
 
 <head>
@@ -79,6 +86,16 @@
                          on:input={searchTasks}/>
         </div> 
         <br>
+        <label>
+            <input type="checkbox" bind:checked={showActiveTasks}>
+            Active tasks
+        </label>
+        <br><br>
+        <label>
+            <input type="checkbox" bind:checked={showExpiredTasks}>
+            Expired tasks
+        </label>
+        <br><br>
         <table>
             <thead>
                 <tr>
